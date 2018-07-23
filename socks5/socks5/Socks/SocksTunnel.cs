@@ -73,7 +73,7 @@ namespace socks5
                         byte[] shit = Req.GetData(true);
                         shit[1] = 0x00;
                         //gucci let's go.
-                        Client.Client.Send(shit);
+                        Client.Client.Send(shit, out var code);
                         ConnectHandler(null);
                         return;
                     }
@@ -81,7 +81,7 @@ namespace socks5
             }
             if (ModifiedReq.Error != SocksError.Granted)
             {
-                Client.Client.Send(Req.GetData(true));
+                Client.Client.Send(Req.GetData(true), out var code);
                 Client.Client.Disconnect();
                 return;
             }
@@ -107,7 +107,7 @@ namespace socks5
                 request[1] = 0x00;
             }
 
-            Client.Client.Send(request);
+            Client.Client.Send(request, out var code);
 
             if(socketArgs != null)
             {
@@ -175,7 +175,7 @@ namespace socks5
             e.Request = this.ModifiedReq;
             foreach (DataHandler f in Plugins)
                 f.OnServerDataReceived(this, e);
-            Client.Client.Send(e.Buffer, e.Offset, e.Count);
+            Client.Client.Send(e.Buffer, e.Offset, e.Count, out var code);
             if (!RemoteClient.Receiving)
                 RemoteClient.ReceiveAsync();
             if (!Client.Client.Receiving)
@@ -188,7 +188,7 @@ namespace socks5
             foreach (DataHandler f in Plugins)
                 f.OnClientDataReceived(this, e);
             
-            RemoteClient.Send(e.Buffer, e.Offset, e.Count);
+            RemoteClient.Send(e.Buffer, e.Offset, e.Count, out var code);
             if (!Client.Client.Receiving)
                 Client.Client.ReceiveAsync();
             if (!RemoteClient.Receiving)

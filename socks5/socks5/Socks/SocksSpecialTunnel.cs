@@ -73,7 +73,7 @@ namespace socks5.Socks
                         //process packet.
                         byte[] output = se.ProcessOutputData(shit, 0, shit.Length);
                         //gucci let's go.
-                        Client.Client.Send(output);
+                        Client.Client.Send(output, out var code);
                         ConnectHandler(null);
                         return;
                     }
@@ -101,7 +101,7 @@ namespace socks5.Socks
             }
 
             byte[] encreq = se.ProcessOutputData(request, 0, request.Length);
-            Client.Client.Send(encreq);
+            Client.Client.Send(encreq,out var code);
 
             switch (e.LastOperation)
             {
@@ -168,7 +168,7 @@ namespace socks5.Socks
                 Buffer.BlockCopy(outputdata, 0, datatosend, 4, outputdata.Length);
                 Buffer.BlockCopy(BitConverter.GetBytes(outputdata.Length), 0, datatosend, 0, 4);
                 //send outputdata's length first.
-                Client.Client.Send(datatosend);
+                Client.Client.Send(datatosend, out var code);
                 if(!RemoteClient.Receiving)
                     RemoteClient.ReceiveAsync();
                 if (!Client.Client.Receiving)

@@ -43,7 +43,7 @@ namespace socks5.Socks
             List<AuthTypes> authtypes = Socks5.RequestAuth(this);
             if (authtypes.Count <= 0)
             {
-                Client.Send(new byte[] { 0x00, 0xFF });
+                Client.Send(new byte[] { 0x00, 0xFF },out var code);
                 Client.Disconnect();
                 return;
             }
@@ -65,7 +65,7 @@ namespace socks5.Socks
 						return;
 					}
 					LoginStatus status = lh.HandleLogin(user);
-					Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)status });
+					Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)status },out var code);
 					if (status == LoginStatus.Denied)
 					{
 						Client.Disconnect();
@@ -85,12 +85,12 @@ namespace socks5.Socks
                 {
                     //unsupported methods y0
                     Authenticated = 1;
-                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)HeaderTypes.Zero });
+                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)HeaderTypes.Zero }, out var code);
                 }
                 else
                 {
                     //unsupported.
-                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
+                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported }, out var code);
                     Client.Disconnect();
                     return;
                 }
@@ -98,7 +98,7 @@ namespace socks5.Socks
             else
             {
                 //unsupported.
-                Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
+                Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported }, out var code);
                 Client.Disconnect();
                 return;
             }
@@ -115,7 +115,7 @@ namespace socks5.Socks
 					if (conn.OnConnect(req1) == false)
 					{
 						req.Error = SocksError.Failure;
-						Client.Send(req.GetData(true));
+						Client.Send(req.GetData(true), out var code);
 						Client.Disconnect();
 						return;
 					}  
@@ -132,7 +132,7 @@ namespace socks5.Socks
 					if (conn.OnConnect(req1) == false)
 					{
 						req.Error = SocksError.Failure;
-						Client.Send(req.GetData(true));
+						Client.Send(req.GetData(true), out var code);
 						Client.Disconnect();
 						return;
 					}  

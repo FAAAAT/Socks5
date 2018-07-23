@@ -83,8 +83,7 @@ namespace socks5.Encryption
         public byte[] ProcessInputData(byte[] buffer, int offset, int count)
         {
             //realign buffer.
-            try
-            {
+            
                 byte[] buff = new byte[count];
                 Buffer.BlockCopy(buffer, offset, buff, 0, count);
                 switch (this.auth)
@@ -102,17 +101,14 @@ namespace socks5.Encryption
                         return buffer;
                 }
             }
-            catch {
-                return null;
-            }
-        }
+           
+        
 
         public byte[] ProcessOutputData(byte[] buffer, int offset, int count)
         {
             //realign buffer.
-            try
-            {
-                byte[] buff = new byte[count - offset];
+           
+                byte[] buff = new byte[count];
                 Buffer.BlockCopy(buffer, offset, buff, 0, count);
                 switch (this.auth)
                 {
@@ -128,11 +124,8 @@ namespace socks5.Encryption
                     default:
                         return buffer;
                 }
-            }
-            catch
-            {
-                return null;
-            }
+            
+            
         }
     }
 }

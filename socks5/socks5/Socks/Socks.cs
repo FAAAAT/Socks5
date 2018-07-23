@@ -66,7 +66,7 @@ namespace socks5.Socks
 			if (auth.Contains(AuthTypes.SocksBoth))
 			{
 				//tell client that we chose socksboth.
-				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksBoth });
+				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksBoth },out var code);
 				//wait for public key.
 				SocksEncryption ph = new SocksEncryption();
 				ph.GenerateKeys();
@@ -76,9 +76,9 @@ namespace socks5.Socks
 				//store key in our encryption class.
 				ph.SetKey(buffer, 0, keysize);
 				//send key.
-				client.Send(ph.GetPublicKey());
+				client.Send(ph.GetPublicKey(),out code);
 				//now we give them our key.
-				client.Send(ph.ShareEncryptionKey());
+				client.Send(ph.ShareEncryptionKey(),out code);
 				//send more.
 				int enckeysize = client.Receive(buffer, 0, buffer.Length);
 				//decrypt with our public key.
@@ -93,7 +93,7 @@ namespace socks5.Socks
 			else if (auth.Contains(AuthTypes.SocksEncrypt))
 			{
 				//tell client that we chose socksboth.
-				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksEncrypt });
+				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksEncrypt },out var code);
 				//wait for public key.
 				SocksEncryption ph = new SocksEncryption();
 				ph.GenerateKeys();
@@ -103,9 +103,9 @@ namespace socks5.Socks
 				//store key in our encryption class.
 				ph.SetKey(buffer, 0, keysize);
 				//send key.
-				client.Send(ph.GetPublicKey());
+				client.Send(ph.GetPublicKey(), out code);
 				//now we give them our key.
-				client.Send(ph.ShareEncryptionKey());
+				client.Send(ph.ShareEncryptionKey(),out code);
 				//send more.
 				int enckeysize = client.Receive(buffer, 0, buffer.Length);
 				//decrypt with our public key.
@@ -119,7 +119,7 @@ namespace socks5.Socks
 			else if (auth.Contains(AuthTypes.SocksCompress))
 			{
 				//start compression.
-				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksCompress });
+				client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.SocksCompress }, out var code);
 				SocksEncryption ph = new SocksEncryption();
 				ph.SetType(AuthTypes.SocksCompress);
 				//ready
@@ -136,7 +136,7 @@ namespace socks5.Socks
 		public static User RequestLogin(SocksClient client)
 		{
 			//request authentication.
-			client.Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Login });
+			client.Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Login }, out var code);
 			byte[] buff;
 			int recv = Receive(client.Client, out buff);
 
