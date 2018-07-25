@@ -76,10 +76,10 @@ namespace socks5.TCP
 			
 		}
 
-		public int Receive(byte[] data, int offset, int count)
+		public int Receive(byte[] data, int offset, int count,out SocketError error)
 		{
 			
-				int received = this.Sock.Receive(data, offset, count, SocketFlags.None);
+				int received = this.Sock.Receive(data, offset, count, SocketFlags.None,out error);
 				if (received <= 0)
 				{
 					

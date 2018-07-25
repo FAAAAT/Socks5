@@ -72,7 +72,7 @@ namespace socks5.Socks
 				ph.GenerateKeys();
 				//wait for public key.
 				byte[] buffer = new byte[4096];
-				int keysize = client.Receive(buffer, 0, buffer.Length);
+				int keysize = client.Receive(buffer, 0, buffer.Length, out var error);
 				//store key in our encryption class.
 				ph.SetKey(buffer, 0, keysize);
 				//send key.
@@ -80,7 +80,7 @@ namespace socks5.Socks
 				//now we give them our key.
 				client.Send(ph.ShareEncryptionKey(),out code);
 				//send more.
-				int enckeysize = client.Receive(buffer, 0, buffer.Length);
+				int enckeysize = client.Receive(buffer, 0, buffer.Length, out error);
 				//decrypt with our public key.
 				byte[] newkey = new byte[enckeysize];
 				Buffer.BlockCopy(buffer, 0, newkey, 0, enckeysize);
@@ -99,7 +99,7 @@ namespace socks5.Socks
 				ph.GenerateKeys();
 				//wait for public key.
 				byte[] buffer = new byte[4096];
-				int keysize = client.Receive(buffer, 0, buffer.Length);
+				int keysize = client.Receive(buffer, 0, buffer.Length, out var error);
 				//store key in our encryption class.
 				ph.SetKey(buffer, 0, keysize);
 				//send key.
@@ -107,7 +107,7 @@ namespace socks5.Socks
 				//now we give them our key.
 				client.Send(ph.ShareEncryptionKey(),out code);
 				//send more.
-				int enckeysize = client.Receive(buffer, 0, buffer.Length);
+				int enckeysize = client.Receive(buffer, 0, buffer.Length, out error);
 				//decrypt with our public key.
 				byte[] newkey = new byte[enckeysize];
 				Buffer.BlockCopy(buffer, 0, newkey, 0, enckeysize);
@@ -200,7 +200,7 @@ namespace socks5.Socks
 		public static int Receive(Client client, out byte[] buffer)
 		{
 			buffer = new byte[65535];
-			return client.Receive(buffer, 0, buffer.Length);
+			return client.Receive(buffer, 0, buffer.Length, out var error);
 		}
 	}
 

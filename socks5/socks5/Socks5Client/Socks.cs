@@ -44,7 +44,7 @@ namespace socks5.Socks5Client
             client.Send(bytes,out var code);
 
             byte[] buffer = new byte[512];
-            int received = client.Receive(buffer, 0, buffer.Length);
+            int received = client.Receive(buffer, 0, buffer.Length,out var error);
             if(received > 0)
             {
                 //check for server version.
@@ -69,7 +69,7 @@ namespace socks5.Socks5Client
             //send request.
             cli.Send(x, out var code);
             byte[] buffer = new byte[512];
-            cli.Receive(buffer, 0, buffer.Length);
+            cli.Receive(buffer, 0, buffer.Length, out var error);
             if (buffer[1] == 0x00)
             {
                 return 1;
@@ -98,7 +98,7 @@ namespace socks5.Socks5Client
             cli.Send(enc.ProcessOutputData(p, 0, p.Length), out var code);
             byte[] buffer = new byte[512];
             //process input data.
-            int recv = cli.Receive(buffer, 0, buffer.Length);
+            int recv = cli.Receive(buffer, 0, buffer.Length, out var error);
             if(recv == -1)
             {
                 return SocksError.Failure;
@@ -136,11 +136,11 @@ namespace socks5.Socks5Client
                         //now receive key.
 
                         byte[] buffer = new byte[4096];
-                        int keysize = p.Client.Receive(buffer, 0, buffer.Length);
+                        int keysize = p.Client.Receive(buffer, 0, buffer.Length, out var error);
                         p.enc.SetKey(buffer, 0, keysize);
                         //let them know we got it
                         //now receive our encryption key.
-                        int enckeysize = p.Client.Receive(buffer, 0, buffer.Length);
+                        int enckeysize = p.Client.Receive(buffer, 0, buffer.Length, out error);
                         //decrypt with our public key.
                         byte[] newkey = new byte[enckeysize];
                         Buffer.BlockCopy(buffer, 0, newkey, 0, enckeysize);
@@ -157,10 +157,10 @@ namespace socks5.Socks5Client
                         //now receive key.
 
                         buffer = new byte[4096];
-                        keysize = p.Client.Receive(buffer, 0, buffer.Length);
+                        keysize = p.Client.Receive(buffer, 0, buffer.Length, out error);
                         p.enc.SetKey(buffer, 0, keysize);
                         //now receive our encryption key.
-                        enckeysize = p.Client.Receive(buffer, 0, buffer.Length);
+                        enckeysize = p.Client.Receive(buffer, 0, buffer.Length, out error);
                         //decrypt with our public key.
                         newkey = new byte[enckeysize];
                         Buffer.BlockCopy(buffer, 0, newkey, 0, enckeysize);
@@ -183,7 +183,7 @@ namespace socks5.Socks5Client
                 {
                     //now receive login params.
                     byte[] buff = new byte[1024];
-                    int recv = p.Client.Receive(buff, 0, buff.Length);
+                    int recv = p.Client.Receive(buff, 0, buff.Length, out var error);
                     //check for 
                     if (recv > 0)
                     {
