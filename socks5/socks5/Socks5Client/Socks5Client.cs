@@ -61,6 +61,15 @@ namespace socks5.Socks5Client
             UseAuthTypes = new List<AuthTypes>(new[] { AuthTypes.None, AuthTypes.Login, AuthTypes.SocksEncrypt });
         }
 
+		/// <summary>
+		/// Create socks5 client
+		/// </summary>
+		/// <param name="ipOrDomain">proxy addr</param>
+		/// <param name="port">proxy port</param>
+		/// <param name="dest">dest addr</param>
+		/// <param name="destport">dest port</param>
+		/// <param name="username">auth username</param>
+		/// <param name="password">auth password</param>
         public Socks5Client(string ipOrDomain, int port, string dest, int destport, string username = null, string password = null)
             : this()
         {
